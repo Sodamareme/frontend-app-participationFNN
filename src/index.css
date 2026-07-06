@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root {
+  /* Palette "caisse commune" — sombre, sérieux, chaleur de l'or pour la valeur */
+  --bg: #0E1B23;
+  --surface: #16283299;
+  --surface-solid: #16283a;
+  --surface-raised: #1D3242;
+  --border: #2A3F4E;
+  --text: #E9F1F2;
+  --text-muted: #8FA5B0;
+  --accent: #2FD3A6;       /* vert émeraude — croissance, épargne */
+  --accent-dim: #1E9779;
+  --gold: #F2B84B;         /* or — valeur, pièces */
+  --danger: #E8615A;
+
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #1a3a3980 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #2a1f3d55 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--accent);
+  color: #06231c;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  font-size: 14.5px;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #06231c;
+}
+.btn-primary:hover:not(:disabled) { background: #3fe0b4; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--accent); }
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: #0F1F28;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+input:focus, select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+input::file-selector-button {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.field { margin-bottom: 16px; }
+
+.error-banner {
+  background: #3a1f1f;
+  border: 1px solid var(--danger);
+  color: #ffb3ae;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.amount-mono {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
