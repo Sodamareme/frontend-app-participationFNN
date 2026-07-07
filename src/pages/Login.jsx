@@ -22,7 +22,7 @@ export default function Login() {
       <div className="card" style={{ width: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div style={{ color: 'var(--accent)', fontSize: 22 }}>◆</div>
-          <h2 style={{ fontFamily: 'var(--font-display)', margin: '8px 0 4px' }}>Caisse Commune</h2>
+          <h2 style={{ fontFamily: 'var(--font-display)', margin: '8px 0 4px' }}>Caisse FNN</h2>
           <div style={{ color: 'var(--text-muted)', fontSize: 13.5 }}>Suivi des participations des membres</div>
         </div>
 
