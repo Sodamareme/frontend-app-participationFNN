@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
 import ContributionRow from '../components/ContributionRow';
@@ -12,6 +12,10 @@ export default function AdminDashboard() {
   const [contributions, setContributions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // État recherche/filtre
+  const [searchName, setSearchName] = useState('');
+  const [searchDate, setSearchDate] = useState('');
 
   const loadData = useCallback(async () => {
     try {
@@ -63,6 +67,21 @@ export default function AdminDashboard() {
     }
   };
 
+  // Filtre client-side : par nom/email de participant, et/ou par date exacte du versement
+  const filteredContributions = useMemo(() => {
+    return contributions.filter((c) => {
+      const matchesName =
+        !searchName.trim() ||
+        c.full_name.toLowerCase().includes(searchName.trim().toLowerCase()) ||
+        c.email.toLowerCase().includes(searchName.trim().toLowerCase());
+
+      const matchesDate =
+        !searchDate || new Date(c.created_at).toISOString().slice(0, 10) === searchDate;
+
+      return matchesName && matchesDate;
+    });
+  }, [contributions, searchName, searchDate]);
+
   if (loading) {
     return (
       <div>
@@ -81,7 +100,7 @@ export default function AdminDashboard() {
         {error && <div className="error-banner">{error}</div>}
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
-          <StatCard label="Somme totale reçue" value={`${formatFCFA(stats.grand_total)} FCFA`} highlight />
+          <StatCard label="Cagnotte totale" value={`${formatFCFA(stats.grand_total)} FCFA`} highlight />
           <StatCard label="Membres" value={stats.total_users} />
           <StatCard label="Versements" value={stats.total_contributions} />
         </div>
@@ -133,14 +152,62 @@ export default function AdminDashboard() {
         </div>
 
         <div className="card">
-          <h3 style={{ marginTop: 0, fontFamily: 'var(--font-display)', fontSize: 17 }}>
-            Tous les versements ({contributions.length})
-          </h3>
-          {contributions.length === 0 ? (
-            <div style={{ color: 'var(--text-muted)', padding: '20px 0' }}>Aucun versement pour le moment.</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+            <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 17 }}>
+              Tous les versements (
+              {filteredContributions.length}
+              {filteredContributions.length !== contributions.length ? ` / ${contributions.length}` : ''}
+              )
+            </h3>
+          </div>
+
+          {contributions.length > 0 && (
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', margin: '16px 0' }}>
+              <div style={{ flex: '2 1 220px' }}>
+                <label htmlFor="searchName">Rechercher un participant</label>
+                <input
+                  id="searchName"
+                  type="text"
+                  placeholder="Nom ou email..."
+                  value={searchName}
+                  onChange={(e) => setSearchName(e.target.value)}
+                />
+              </div>
+              <div style={{ flex: '1 1 160px' }}>
+                <label htmlFor="searchDate">Filtrer par date</label>
+                <input
+                  id="searchDate"
+                  type="date"
+                  value={searchDate}
+                  onChange={(e) => setSearchDate(e.target.value)}
+                />
+              </div>
+              {(searchName || searchDate) && (
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={() => {
+                      setSearchName('');
+                      setSearchDate('');
+                    }}
+                    style={{ height: 44 }}
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {filteredContributions.length === 0 ? (
+            <div style={{ color: 'var(--text-muted)', padding: '20px 0' }}>
+              {contributions.length === 0
+                ? 'Aucun versement pour le moment.'
+                : 'Aucun versement ne correspond à cette recherche.'}
+            </div>
           ) : (
             <div>
-              {contributions.map((c) => (
+              {filteredContributions.map((c) => (
                 <ContributionRow key={c.id} contribution={c} isAdmin onDelete={handleDeleteContribution} />
               ))}
             </div>
