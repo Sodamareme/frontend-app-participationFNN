@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import PotOverview from '../components/PotOverview';
 import AddContributionForm from '../components/AddContributionForm';
 import ContributionRow from '../components/ContributionRow';
+import { exportContributionsToExcel, slugifyFilename } from '../utils/exportExcel';
 import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
@@ -55,6 +56,12 @@ export default function Dashboard() {
     });
   }, [contributions, searchName, searchDate]);
 
+  const handleExport = () => {
+    const base = slugifyFilename(user?.full_name || 'mes-versements');
+    const suffix = searchName || searchDate ? 'recherche' : 'tous';
+    exportContributionsToExcel(filteredContributions, `versements-${base}-${suffix}.xlsx`);
+  };
+
   return (
     <div>
       <Navbar />
@@ -77,6 +84,11 @@ export default function Dashboard() {
               {filteredContributions.length !== contributions.length ? ` / ${contributions.length}` : ''}
               )
             </h3>
+            {filteredContributions.length > 0 && (
+              <button className="btn btn-ghost" onClick={handleExport}>
+                📊 Exporter en Excel
+              </button>
+            )}
           </div>
 
           {!loading && contributions.length > 0 && (
